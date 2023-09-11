@@ -1,6 +1,6 @@
-package com.ohsproject.ohs.product.entity;
+package com.ohsproject.ohs.product.domain;
 
-import com.ohsproject.ohs.orderDetail.entity.OrderDetail;
+import com.ohsproject.ohs.orderDetail.domain.OrderDetail;
 import lombok.Builder;
 import lombok.Getter;
 

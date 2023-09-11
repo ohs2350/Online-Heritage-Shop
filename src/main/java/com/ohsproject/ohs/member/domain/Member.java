@@ -1,6 +1,6 @@
-package com.ohsproject.ohs.member.entity;
+package com.ohsproject.ohs.member.domain;
 
-import com.ohsproject.ohs.order.entity.Order;
+import com.ohsproject.ohs.order.domain.Order;
 import lombok.Getter;
 
 import javax.persistence.*;
