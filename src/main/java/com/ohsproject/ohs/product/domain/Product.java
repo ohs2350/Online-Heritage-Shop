@@ -27,19 +27,15 @@ public class Product {
     @Column(name = "hit")
     private int hit;
 
-    @OneToMany(mappedBy = "product")
-    private List<OrderDetail> orderDetails;
-
     protected Product() {
 
     }
 
-    private Product(Long id, String name, int price, int stock, int hit, List<OrderDetail> orderDetails) {
+    private Product(Long id, String name, int price, int stock, int hit) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.hit = hit;
-        this.orderDetails = orderDetails;
     }
 }

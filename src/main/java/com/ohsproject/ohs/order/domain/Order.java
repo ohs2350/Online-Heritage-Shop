@@ -27,18 +27,14 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderDetail> orderDetails;
-
     protected Order() {
 
     }
 
-    private Order(Long id, LocalDateTime orderDate, int amount, Member member, List<OrderDetail> orderDetails) {
+    private Order(Long id, LocalDateTime orderDate, int amount, Member member) {
         this.id = id;
         this.orderDate = orderDate;
         this.amount = amount;
         this.member = member;
-        this.orderDetails = orderDetails;
     }
 }

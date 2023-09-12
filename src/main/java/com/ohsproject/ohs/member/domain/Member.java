@@ -16,16 +16,12 @@ public class Member {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders;
-
     protected Member() {
 
     }
 
-    public Member(Long id, String name, List<Order> orders) {
+    public Member(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.orders = orders;
     }
 }
