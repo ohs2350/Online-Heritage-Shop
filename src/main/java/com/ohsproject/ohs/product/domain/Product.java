@@ -38,4 +38,12 @@ public class Product {
         this.stock = stock;
         this.hit = hit;
     }
+
+    public void decreaseStock(int n) {
+        this.stock -= n;
+    }
+
+    public void increaseStock(int n) {
+        this.stock += n;
+    }
 }
