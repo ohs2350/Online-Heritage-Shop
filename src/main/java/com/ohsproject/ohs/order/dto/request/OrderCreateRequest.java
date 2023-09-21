@@ -12,13 +12,16 @@ import java.util.Objects;
 @Getter
 public class OrderCreateRequest {
     @NotNull
-    private final Long memberId;
+    private Long memberId;
     @NotNull
-    private final List<Long> productIds;
+    private List<Long> productIds;
     @NotNull
-    private final List<Integer> quantities;
+    private List<Integer> quantities;
     @NotNull
-    private final int amount;
+    private int amount;
+
+    private OrderCreateRequest() {
+    }
 
     public OrderCreateRequest(final Long memberId, final List<Long> productIds, final List<Integer> quantities, final int amount) {
         this.memberId = memberId;
