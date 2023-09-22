@@ -9,6 +9,7 @@ spring:
         format_sql: true
         use_sql_comments: true
         #hbm2ddl.auto: create
+    defer-datasource-initialization: true
   h2:
     console:
       enabled: true
@@ -18,3 +19,6 @@ spring:
       url: jdbc:h2:~/test
       username: sa
       password:
+  sql:
+    init:
+      data-locations: classpath:data.sql
