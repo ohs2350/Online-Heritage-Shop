@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
-import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,9 +20,8 @@ public class MemberService {
 
     public void login(MemberLoginDto memberLoginDto, HttpSession httpSession) {
         Member member = findMemberById(memberLoginDto.getId());
-        String sessionId = UUID.randomUUID().toString();
 
-        httpSession.setAttribute(sessionId, member);
+        httpSession.setAttribute("member", member);
     }
 
     private Member findMemberById(Long id) {
