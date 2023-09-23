@@ -1,5 +1,6 @@
 package com.ohsproject.ohs.order.controller;
 
+import com.ohsproject.ohs.global.annotation.Login;
 import com.ohsproject.ohs.order.domain.Order;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.service.OrderService;
@@ -22,6 +23,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @Login
     public ResponseEntity<Void> create(@RequestBody @Valid final OrderCreateRequest orderCreateRequest) {
         Long id = orderService.placeOrder(orderCreateRequest);
 
