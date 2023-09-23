@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class Order {
     @Id @Column(name = "order_id")
+    @GeneratedValue
     private Long id;
 
     @Column(name = "order_date")

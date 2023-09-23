@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Builder
 public class OrderDetail {
     @Id @Column(name = "order_item_id")
+    @GeneratedValue
     private Long id;
 
     @Column(name = "qty")

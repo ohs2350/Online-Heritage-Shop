@@ -1,6 +1,7 @@
 package com.ohsproject.ohs.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.order.controller.OrderController;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.service.OrderService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -43,12 +45,16 @@ public class OrderControllerTest {
     void successCreateOrder() throws Exception {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("member", new Member(1L,"test"));
+
         when(orderService.placeOrder(any(OrderCreateRequest.class))).thenReturn(ORDER_ID);
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/order")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
                         .content(objectMapper.writeValueAsString(orderCreateRequest))
         );
 
@@ -63,12 +69,16 @@ public class OrderControllerTest {
     void unSuccessCreateOrder() throws Exception {
         // given
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(null, null, null, 1000);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("member", new Member(1L,"test"));
+
         when(orderService.placeOrder(any(OrderCreateRequest.class))).thenReturn(ORDER_ID);
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/order")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
                         .content(objectMapper.writeValueAsString(orderCreateRequest))
         );
 
