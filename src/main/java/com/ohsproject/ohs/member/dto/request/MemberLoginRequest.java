@@ -5,14 +5,14 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 
 @Getter
-public class MemberLoginDto {
+public class MemberLoginRequest {
     @NotNull
     private Long id;
 
-    private MemberLoginDto() {
+    private MemberLoginRequest() {
     }
 
-    public MemberLoginDto(final Long id) {
+    public MemberLoginRequest(final Long id) {
         this.id = id;
     }
 }
