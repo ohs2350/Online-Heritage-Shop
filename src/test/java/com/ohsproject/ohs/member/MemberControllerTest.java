@@ -2,7 +2,7 @@ package com.ohsproject.ohs.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohsproject.ohs.member.controller.MemberController;
-import com.ohsproject.ohs.member.dto.request.MemberLoginDto;
+import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
 import com.ohsproject.ohs.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 api 호출 성공")
     void success_login() throws Exception {
         // given
-        MemberLoginDto memberLoginDto = createSampleMemberLoginDto();
+        MemberLoginRequest memberLoginRequest = createSampleMemberLoginDto();
         MockHttpSession session = new MockHttpSession();
 
         // when
@@ -45,7 +45,7 @@ public class MemberControllerTest {
                 post("/api/v1/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(memberLoginDto))
+                        .content(objectMapper.writeValueAsString(memberLoginRequest))
         );
 
         // then
@@ -56,7 +56,7 @@ public class MemberControllerTest {
     @DisplayName("잘못된 ID로 로그인 시 실패")
     void unSuccess_login() throws Exception {
         // given
-        MemberLoginDto memberLoginDto = new MemberLoginDto(null);
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(null);
         MockHttpSession session = new MockHttpSession();
 
         // when
@@ -64,14 +64,14 @@ public class MemberControllerTest {
                 post("/api/v1/member/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(memberLoginDto))
+                        .content(objectMapper.writeValueAsString(memberLoginRequest))
         );
 
         // then
         resultActions.andExpect(status().isBadRequest());
     }
 
-    private MemberLoginDto createSampleMemberLoginDto() {
-        return new MemberLoginDto(MEMBER_ID);
+    private MemberLoginRequest createSampleMemberLoginDto() {
+        return new MemberLoginRequest(MEMBER_ID);
     }
 }
