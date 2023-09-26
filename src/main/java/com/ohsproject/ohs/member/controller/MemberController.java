@@ -1,12 +1,9 @@
 package com.ohsproject.ohs.member.controller;
 
-import com.ohsproject.ohs.member.dto.request.MemberLoginDto;
+import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
 import com.ohsproject.ohs.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -21,9 +18,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid final MemberLoginDto memberLoginDto, HttpSession httpSession) {
-        memberService.login(memberLoginDto, httpSession);
+    public ResponseEntity<Void> login(@RequestBody @Valid final MemberLoginRequest memberLoginRequest, HttpSession httpSession) {
+        memberService.login(memberLoginRequest, httpSession);
 
         return ResponseEntity.ok().build();
     }
+
 }

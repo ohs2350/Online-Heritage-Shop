@@ -1,7 +1,7 @@
 package com.ohsproject.ohs.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ohsproject.ohs.member.domain.Member;
+import com.ohsproject.ohs.global.exception.SessionNotValidException;
 import com.ohsproject.ohs.order.controller.OrderController;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.service.OrderService;
@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,7 +47,7 @@ public class OrderControllerTest {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member", new Member(1L,"test"));
+        session.setAttribute("memberId", 1L);
 
         when(orderService.placeOrder(any(OrderCreateRequest.class))).thenReturn(ORDER_ID);
 
@@ -70,7 +71,7 @@ public class OrderControllerTest {
         // given
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(null, null, null, 1000);
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute("member", new Member(1L,"test"));
+        session.setAttribute("memberId", 1L);
 
         when(orderService.placeOrder(any(OrderCreateRequest.class))).thenReturn(ORDER_ID);
 
@@ -85,6 +86,22 @@ public class OrderControllerTest {
         // then
         resultActions.andExpect(status().isBadRequest());
         verify(orderService, times(0)).placeOrder(refEq(orderCreateRequest));
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 채 주문")
+    void createOrder_without_login()  {
+        // given
+        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        MockHttpSession session = new MockHttpSession();
+
+        // when, then
+        assertThatThrownBy(() -> mockMvc.perform(
+                post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCreateRequest))
+        )).hasCause(new SessionNotValidException());
     }
 
     private OrderCreateRequest createSampleOrderCreateRequest() {

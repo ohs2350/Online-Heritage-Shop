@@ -1,6 +1,7 @@
 package com.ohsproject.ohs.global.interceptor;
 
 import com.ohsproject.ohs.global.annotation.Login;
+import com.ohsproject.ohs.global.exception.SessionNotValidException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,13 +13,19 @@ import javax.servlet.http.HttpSession;
 @Component
 public class SessionInterceptor implements HandlerInterceptor {
 
+    private static final String SESSION_ATTRIBUTE_NAME = "memberId";
+
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
-        if (!(handler instanceof HandlerMethod) || !isLoginAnnotation(handler)) {
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+        if (isLoginAnnotation(handler)) {
+            checkLogin(request);
             return true;
         }
 
-        checkSession(request);
+        HttpSession session = request.getSession(true);
         return true;
     }
 
@@ -27,16 +34,11 @@ public class SessionInterceptor implements HandlerInterceptor {
         return handlerMethod.getMethodAnnotation(Login.class) != null;
     }
 
-    private void checkSession(final HttpServletRequest request) {
+    private void checkLogin(final HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.isNew()) {
-            throw new RuntimeException("세션 없음");
-        }
-
-        Object member = session.getAttribute("member");
-        if (member == null) {
-            throw new RuntimeException("잘못된 세션");
+        if (session == null || session.getAttribute(SESSION_ATTRIBUTE_NAME) == null) {
+            throw new SessionNotValidException();
         }
     }
 }

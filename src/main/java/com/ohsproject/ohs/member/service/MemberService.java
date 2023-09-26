@@ -2,7 +2,7 @@ package com.ohsproject.ohs.member.service;
 
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
-import com.ohsproject.ohs.member.dto.request.MemberLoginDto;
+import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
 import com.ohsproject.ohs.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +18,10 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public void login(MemberLoginDto memberLoginDto, HttpSession httpSession) {
-        Member member = findMemberById(memberLoginDto.getId());
+    public void login(MemberLoginRequest memberLoginRequest, HttpSession httpSession) {
+        Member member = findMemberById(memberLoginRequest.getId());
 
-        httpSession.setAttribute("member", member);
+        httpSession.setAttribute("memberId", member.getId());
     }
 
     private Member findMemberById(Long id) {
