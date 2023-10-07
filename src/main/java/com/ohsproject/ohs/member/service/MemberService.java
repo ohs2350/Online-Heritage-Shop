@@ -1,5 +1,6 @@
 package com.ohsproject.ohs.member.service;
 
+import com.ohsproject.ohs.global.exception.DuplicateLoginException;
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
 import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
@@ -20,6 +21,10 @@ public class MemberService {
 
     public void login(MemberLoginRequest memberLoginRequest, HttpSession httpSession) {
         Member member = findMemberById(memberLoginRequest.getId());
+
+        if (httpSession.getAttribute("memberId")!= null) {
+            throw new DuplicateLoginException();
+        }
 
         httpSession.setAttribute("memberId", member.getId());
     }
