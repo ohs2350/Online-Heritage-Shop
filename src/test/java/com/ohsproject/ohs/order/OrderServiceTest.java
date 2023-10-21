@@ -62,7 +62,6 @@ public class OrderServiceTest {
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
-        when(productRepository.save(any(Product.class))).thenReturn(product);
         when(orderRepository.save(any(Order.class))).thenReturn(createSampleOrder());
         when(orderDetailRepository.save(any(OrderDetail.class))).thenReturn(createSampleOrderDetail());
 
@@ -74,7 +73,6 @@ public class OrderServiceTest {
                 () -> assertThat(orderId).isEqualTo(1L),
                 () -> verify(memberRepository, times(1)).findById(member.getId()),
                 () -> verify(productRepository, times(1)).findById(product.getId()),
-                () -> verify(productRepository, times(1)).save(any(Product.class)),
                 () -> verify(orderRepository, times(1)).save(any(Order.class)),
                 () -> verify(orderDetailRepository, times(1)).save(any(OrderDetail.class))
         );
