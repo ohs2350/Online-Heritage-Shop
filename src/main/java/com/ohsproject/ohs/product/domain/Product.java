@@ -1,6 +1,7 @@
 package com.ohsproject.ohs.product.domain;
 
 import com.ohsproject.ohs.orderDetail.domain.OrderDetail;
+import com.ohsproject.ohs.product.exception.InsufficientStockException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -40,6 +41,9 @@ public class Product {
     }
 
     public void decreaseStock(int n) {
+        if (this.stock < n) {
+            throw new InsufficientStockException();
+        }
         this.stock -= n;
     }
 
