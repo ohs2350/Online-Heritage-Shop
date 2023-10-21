@@ -61,7 +61,6 @@ public class OrderService {
 
                     Product product = findProductById(productId);
                     updateProductStock(product, quantity);
-                    validateProductStock(product);
 
                     OrderDetail orderDetail = createOrderDetail(order, product, quantity);
                     orderDetailRepository.save(orderDetail);
@@ -78,13 +77,6 @@ public class OrderService {
 
     private void updateProductStock(Product product, int qty) {
         product.decreaseStock(qty);
-        productRepository.save(product);
-    }
-
-    private void validateProductStock(Product product) {
-        if (product.getStock() < 0) {
-            throw new InsufficientStockException();
-        }
     }
 
     private Product findProductById(Long id) {
