@@ -1,4 +1,4 @@
-package com.ohsproject.ohs.order;
+package com.ohsproject.ohs.order.service;
 
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
@@ -6,9 +6,8 @@ import com.ohsproject.ohs.order.domain.*;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
 import com.ohsproject.ohs.order.exception.OrderNotValidException;
-import com.ohsproject.ohs.order.service.OrderService;
-import com.ohsproject.ohs.product.domain.PaymentProduct;
-import com.ohsproject.ohs.product.domain.PaymentProductOperation;
+import com.ohsproject.ohs.global.redis.PaymentProduct;
+import com.ohsproject.ohs.global.redis.PaymentProductOperation;
 import com.ohsproject.ohs.product.domain.Product;
 import com.ohsproject.ohs.product.domain.ProductRepository;
 import com.ohsproject.ohs.product.exception.InsufficientStockException;
@@ -32,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -111,7 +111,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("잘못된 상품번호로 주문하는 경우")
+    @DisplayName("잘못된 상품번호로 주문하는 경우 예외 발생")
     public void testPlaceOrder_ProductNotFound() {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
@@ -125,7 +125,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문한 상품의 재고량이 부족한 경우")
+    @DisplayName("주문한 상품의 재고량이 부족한 경우 예외 발생")
     public void testPlaceOrder_InsufficientStock() {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_MORE_THAN_STOCK);
@@ -146,7 +146,7 @@ public class OrderServiceTest {
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
         Order order = createSampleOrder();
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
-        when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(1L);
+        when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(1);
 
         // when
         orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID);
@@ -158,7 +158,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("이미 처리된 주문으로 요청하는 경우")
+    @DisplayName("이미 처리된 주문으로 요청하는 경우 예외 발생")
     public void testCompleteOrder_AlreadyCompleteOrder() {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
@@ -196,7 +196,7 @@ public class OrderServiceTest {
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
         Order order = createSampleOrder();
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
-        when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(0L);
+        when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(0);
 
         // when, then
         assertThrows(InsufficientStockException.class, () -> orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID));
