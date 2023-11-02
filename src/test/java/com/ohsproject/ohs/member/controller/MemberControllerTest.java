@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static com.ohsproject.ohs.Constants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,8 +27,6 @@ public class MemberControllerTest {
     private MemberService memberService;
 
     final ObjectMapper objectMapper;
-
-    private static final long MEMBER_ID = 1L;
 
     public MemberControllerTest() {
         this.objectMapper = new ObjectMapper();

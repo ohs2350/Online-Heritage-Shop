@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import java.util.Optional;
 
+import static com.ohsproject.ohs.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -26,8 +27,6 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
-    private static final long MEMBER_ID = 1L;
 
     @Test
     @DisplayName("로그인 성공")
