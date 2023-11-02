@@ -1,12 +1,10 @@
 package com.ohsproject.ohs.product.domain;
 
-import com.ohsproject.ohs.orderDetail.domain.OrderDetail;
 import com.ohsproject.ohs.product.exception.InsufficientStockException;
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -40,14 +38,9 @@ public class Product {
         this.hit = hit;
     }
 
-    public void decreaseStock(int n) {
-        if (this.stock < n) {
+    public void checkSpareStock(int quantity, Long paymentProductQty) {
+        if (this.stock < quantity + paymentProductQty) {
             throw new InsufficientStockException();
         }
-        this.stock -= n;
-    }
-
-    public void increaseStock(int n) {
-        this.stock += n;
     }
 }
