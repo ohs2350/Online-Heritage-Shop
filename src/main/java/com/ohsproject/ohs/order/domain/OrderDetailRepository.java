@@ -1,4 +1,4 @@
-package com.ohsproject.ohs.orderDetail.domain;
+package com.ohsproject.ohs.order.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
