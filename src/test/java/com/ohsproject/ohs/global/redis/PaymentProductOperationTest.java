@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import static com.ohsproject.ohs.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,9 @@ public class PaymentProductOperationTest {
 
     @Autowired
     private PaymentProductOperation paymentProductOperation;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Test
     @DisplayName("결제한 상품의 수량만큼 redis 에 add 한다.")
@@ -43,5 +47,20 @@ public class PaymentProductOperationTest {
         assertEquals(0, count);
     }
 
+    @Test
+    @DisplayName("주문 유효기간이 지난 상품을 모두 제거한다.")
+    public void removeRangeByScore() {
+        // given
+        String testKey = "product:testProduct1";
+        long score = (System.currentTimeMillis() / 1000);
+        redisTemplate.opsForZSet().add(testKey, "test", score);
+
+        // when
+        paymentProductOperation.removeRangeByScore(testKey);
+
+        // then
+        Long count = redisTemplate.opsForZSet().count(testKey, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+        assertEquals(0, count);
+    }
 
 }
