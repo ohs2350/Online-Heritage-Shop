@@ -1,5 +1,6 @@
 package com.ohsproject.ohs.order.domain;
 
+import com.ohsproject.ohs.global.constant.OrderValidTime;
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.order.exception.OrderNotValidException;
 import lombok.Builder;
@@ -13,8 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "orders")
 @Builder
 public class Order {
-
-    private static final int ORDER_VALID_TIME = 15;
 
     @Id @Column(name = "order_id")
     @GeneratedValue
@@ -51,7 +50,8 @@ public class Order {
 
     public void validateOrder() {
         LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(this.orderDate.plusMinutes(ORDER_VALID_TIME)) ) {
+        Long orderValidityTime = OrderValidTime.COMMON.getMinutes();
+        if (now.isAfter(this.orderDate.plusMinutes(orderValidityTime)) ) {
             throw new OrderNotValidException();
         }
         if (!this.status.equals(OrderStatus.ORDER)) {
