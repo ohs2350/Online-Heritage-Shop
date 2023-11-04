@@ -27,6 +27,8 @@ spring:
     store-type: redis
     #redis:
       #namespace: test:session
+  profiles:
+    active: main
 
 server:
   servlet:
