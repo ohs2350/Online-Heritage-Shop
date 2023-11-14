@@ -103,11 +103,10 @@ public class OrderService {
         final List<OrderDetailRequest> orderDetailRequests = orderCreateRequest.getOrderDetailRequests();
         Order order = findOrderById(orderId);
         order.validateOrder();
+        order.changeStatus(OrderStatus.ORDER_COMPLETE);
 
         removePaymentStocks(orderDetailRequests, memberId);
         updateProductStocks(orderDetailRequests);
-
-        order.changeStatus(OrderStatus.ORDER_COMPLETE);
     }
 
     private Order findOrderById(Long id) {
