@@ -3,6 +3,7 @@ package com.ohsproject.ohs.order.controller;
 import com.ohsproject.ohs.global.annotation.Login;
 import com.ohsproject.ohs.global.annotation.CurrentMember;
 import com.ohsproject.ohs.member.dto.request.MemberInfo;
+import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,10 @@ public class OrderController {
 
     @Login
     @PutMapping("/{orderId}")
-    public ResponseEntity<Void> completeOrder(@RequestBody @Valid final OrderCreateRequest orderCreateRequest,
+    public ResponseEntity<Void> completeOrder(@RequestBody @Valid final OrderCompleteRequest orderCompleteRequest,
                               @PathVariable final Long orderId,
                               @CurrentMember final MemberInfo memberInfo) {
-        orderService.completeOrder(orderCreateRequest, orderId, memberInfo.getId());
+        orderService.completeOrder(orderCompleteRequest, orderId, memberInfo.getId());
 
         return ResponseEntity.ok().build();
     }

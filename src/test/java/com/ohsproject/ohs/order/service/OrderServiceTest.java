@@ -3,6 +3,7 @@ package com.ohsproject.ohs.order.service;
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
 import com.ohsproject.ohs.order.domain.*;
+import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
 import com.ohsproject.ohs.order.exception.OrderNotValidException;
@@ -143,13 +144,13 @@ public class OrderServiceTest {
     @DisplayName("주문 완료 성공")
     public void testCompleteOrder() {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest(QTY_LESS_THAN_STOCK);
         Order order = createSampleOrder();
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
         when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(1);
 
         // when
-        orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID);
+        orderService.completeOrder(orderCompleteRequest, ORDER_ID_1ST, MEMBER_ID);
 
         // then
         assertThat(order.getStatus()).isEqualTo(OrderStatus.ORDER_COMPLETE);
@@ -161,7 +162,7 @@ public class OrderServiceTest {
     @DisplayName("이미 처리된 주문으로 요청하는 경우 예외 발생")
     public void testCompleteOrder_AlreadyCompleteOrder() {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest(QTY_LESS_THAN_STOCK);
         Order order = Order.builder()
                 .id(ORDER_ID_1ST)
                 .status(OrderStatus.ORDER_COMPLETE)
@@ -170,14 +171,14 @@ public class OrderServiceTest {
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
 
         // when, then
-        assertThrows(OrderNotValidException.class, () -> orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID));
+        assertThrows(OrderNotValidException.class, () -> orderService.completeOrder(orderCompleteRequest, ORDER_ID_1ST, MEMBER_ID));
     }
 
     @Test
     @DisplayName("요청 가능한 기한이 지난 주문으로 요청하는 경우")
     public void testCompleteOrder_OverTimePeriod() {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest(QTY_LESS_THAN_STOCK);
         Order order = Order.builder()
                 .id(ORDER_ID_1ST)
                 .status(OrderStatus.ORDER)
@@ -186,20 +187,20 @@ public class OrderServiceTest {
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
 
         // when, then
-        assertThrows(OrderNotValidException.class, () -> orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID));
+        assertThrows(OrderNotValidException.class, () -> orderService.completeOrder(orderCompleteRequest, ORDER_ID_1ST, MEMBER_ID));
     }
 
     @Test
     @DisplayName("결제 후 재고량이 부족한 경우")
     public void testCompleteOrder_InsufficientStock() {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest(QTY_LESS_THAN_STOCK);
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest(QTY_LESS_THAN_STOCK);
         Order order = createSampleOrder();
         when(orderRepository.findById(ORDER_ID_1ST)).thenReturn(Optional.of(order));
         when(productRepository.decreaseProductStock(any(Long.class), any(Integer.class))).thenReturn(0);
 
         // when, then
-        assertThrows(InsufficientStockException.class, () -> orderService.completeOrder(orderCreateRequest, ORDER_ID_1ST, MEMBER_ID));
+        assertThrows(InsufficientStockException.class, () -> orderService.completeOrder(orderCompleteRequest, ORDER_ID_1ST, MEMBER_ID));
     }
 
     private OrderCreateRequest createSampleOrderCreateRequest(int qty) {
@@ -217,6 +218,13 @@ public class OrderServiceTest {
         orderDetailRequests.add(orderDetailRequest1);
         orderDetailRequests.add(orderDetailRequest2);
         return new OrderCreateRequest(orderDetailRequests, 1000);
+    }
+
+    private OrderCompleteRequest createSampleOrderCompleteRequest(int qty) {
+        OrderDetailRequest orderDetailRequest = new OrderDetailRequest(1L, qty);
+        List<OrderDetailRequest> orderDetailRequests = new ArrayList<>();
+        orderDetailRequests.add(orderDetailRequest);
+        return new OrderCompleteRequest(orderDetailRequests, 1000);
     }
 
     private Product createSampleProduct(Long id, int stock) {
@@ -237,9 +245,5 @@ public class OrderServiceTest {
                 .orderDate(LocalDateTime.now())
                 .status(OrderStatus.ORDER)
                 .build();
-    }
-
-    private OrderDetail createSampleOrderDetail() {
-        return  OrderDetail.builder().build();
     }
 }

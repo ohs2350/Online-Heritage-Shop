@@ -22,10 +22,14 @@ public class PaymentProductOperationTest {
     @DisplayName("결제한 상품의 수량만큼 redis 에 add 한다.")
     void add() {
         // given
-        PaymentProduct product1 =  new PaymentProduct(PRODUCT_ID_1ST, MEMBER_ID, PRODUCT_STOCK_1ST);
+        PaymentProduct product = PaymentProduct.builder()
+                .productId(PRODUCT_ID_1ST)
+                .memberId(MEMBER_ID)
+                .qty(PRODUCT_STOCK_1ST)
+                .build();
 
         // when
-        paymentProductOperation.add(product1);
+        paymentProductOperation.add(product);
 
         // then
         Long count = paymentProductOperation.count(PRODUCT_ID_1ST);
@@ -36,7 +40,11 @@ public class PaymentProductOperationTest {
     @DisplayName("사용자가 주문한 모든 상품을 제거한다.")
     public void remove() {
         // given
-        PaymentProduct product =  new PaymentProduct(PRODUCT_ID_1ST, MEMBER_ID, PRODUCT_STOCK_1ST);
+        PaymentProduct product = PaymentProduct.builder()
+                .productId(PRODUCT_ID_1ST)
+                .memberId(MEMBER_ID)
+                .qty(PRODUCT_STOCK_1ST)
+                .build();
         paymentProductOperation.add(product);
 
         // when

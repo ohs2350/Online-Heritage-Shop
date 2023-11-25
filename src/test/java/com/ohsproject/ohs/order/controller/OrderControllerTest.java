@@ -2,6 +2,7 @@ package com.ohsproject.ohs.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohsproject.ohs.global.exception.SessionNotValidException;
+import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
 import com.ohsproject.ohs.order.service.OrderService;
@@ -107,7 +108,7 @@ public class OrderControllerTest {
     @DisplayName("주문 완료 api 요청 성공")
     public void completeOrder() throws Exception {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SESSION_ATTRIBUTE_NAME, MEMBER_ID);
         doNothing().when(orderService).completeOrder(any(), any(), any());
@@ -117,7 +118,7 @@ public class OrderControllerTest {
                 put("/api/v1/order/{orderId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(orderCreateRequest))
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
         );
 
         // then
@@ -128,7 +129,7 @@ public class OrderControllerTest {
     @DisplayName("잘못된 입력으로 주문 완료 요청 시 실패")
     void completeOrderWithNotValidRequest() throws Exception {
         // given
-        OrderCreateRequest orderCreateRequest = new OrderCreateRequest(null, 1000);
+        OrderCompleteRequest orderCompleteRequest = new OrderCompleteRequest(null, 1000);
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SESSION_ATTRIBUTE_NAME, MEMBER_ID);
 
@@ -139,7 +140,7 @@ public class OrderControllerTest {
                 put("/api/v1/order/{orderId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(orderCreateRequest))
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
         );
 
         // then
@@ -167,5 +168,12 @@ public class OrderControllerTest {
         List<OrderDetailRequest> orderDetailRequests = new ArrayList<>();
         orderDetailRequests.add(orderDetailRequest);
         return new OrderCreateRequest(orderDetailRequests, 1000);
+    }
+
+    private OrderCompleteRequest createSampleOrderCompleteRequest() {
+        OrderDetailRequest orderDetailRequest = new OrderDetailRequest(PRODUCT_ID_1ST, QTY_LESS_THAN_STOCK);
+        List<OrderDetailRequest> orderDetailRequests = new ArrayList<>();
+        orderDetailRequests.add(orderDetailRequest);
+        return new OrderCompleteRequest(orderDetailRequests, 1000);
     }
 }

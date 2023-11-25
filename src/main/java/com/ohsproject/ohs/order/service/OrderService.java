@@ -1,14 +1,15 @@
 package com.ohsproject.ohs.order.service;
 
+import com.ohsproject.ohs.global.redis.PaymentProduct;
+import com.ohsproject.ohs.global.redis.PaymentProductOperation;
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
 import com.ohsproject.ohs.member.exception.MemberNotFoundException;
 import com.ohsproject.ohs.order.domain.*;
+import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
 import com.ohsproject.ohs.order.exception.OrderNotFountException;
-import com.ohsproject.ohs.global.redis.PaymentProduct;
-import com.ohsproject.ohs.global.redis.PaymentProductOperation;
 import com.ohsproject.ohs.product.domain.Product;
 import com.ohsproject.ohs.product.domain.ProductRepository;
 import com.ohsproject.ohs.product.exception.InsufficientStockException;
@@ -20,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -43,7 +43,8 @@ public class OrderService {
 
     @Transactional
     public Long placeOrder(OrderCreateRequest orderCreateRequest, Long memberId) {
-        Member member = findMemberById(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
         final List<OrderDetailRequest> orderDetailRequests = orderCreateRequest.getOrderDetailRequests();
 
         validateProductStocks(orderDetailRequests);
@@ -56,52 +57,45 @@ public class OrderService {
         return orderId;
     }
 
-    private Member findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
     private void validateProductStocks(List<OrderDetailRequest> orderDetailRequests) {
         for (OrderDetailRequest orderDetailRequest : orderDetailRequests) {
-            Product product = findProductById(orderDetailRequest.getProductId());
+            Product product = productRepository.findById(orderDetailRequest.getProductId())
+                    .orElseThrow(ProductNotFoundException::new);
             Long paymentProductQty = paymentProductOperation.count(product.getId());
-
             product.checkSpareStock(orderDetailRequest.getQty(), paymentProductQty);
         }
     }
 
     private void createPaymentProducts(List<OrderDetailRequest> orderDetailRequests, Long memberId) {
         for (OrderDetailRequest orderDetailRequest : orderDetailRequests) {
-            PaymentProduct paymentProduct = new PaymentProduct(orderDetailRequest.getProductId(), memberId, orderDetailRequest.getQty());
+            PaymentProduct paymentProduct = PaymentProduct.builder()
+                    .productId(orderDetailRequest.getProductId())
+                    .memberId(memberId)
+                    .qty(orderDetailRequest.getQty())
+                    .build();
             paymentProductOperation.add(paymentProduct);
         }
     }
 
     private void createOrderDetails(List<OrderDetailRequest> orderDetailRequests, Order order) {
         for (OrderDetailRequest orderDetailRequest : orderDetailRequests) {
-            Product product = findProductById(orderDetailRequest.getProductId());
-            OrderDetail orderDetail = createOrderDetail(order, product, orderDetailRequest.getQty());
+            Product product = productRepository.findById(orderDetailRequest.getProductId())
+                    .orElseThrow(ProductNotFoundException::new);
+
+            OrderDetail orderDetail = OrderDetail.builder()
+                    .order(order)
+                    .product(product)
+                    .qty(orderDetailRequest.getQty())
+                    .build();
             orderDetailRepository.save(orderDetail);
         }
     }
 
-    private Product findProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(ProductNotFoundException::new);
-    }
-
-    private OrderDetail createOrderDetail(Order order, Product product, int qty) {
-        return OrderDetail.builder()
-                .order(order)
-                .product(product)
-                .qty(qty)
-                .build();
-    }
-
     @Transactional
-    public void completeOrder(OrderCreateRequest orderCreateRequest, Long orderId, Long memberId) {
-        final List<OrderDetailRequest> orderDetailRequests = orderCreateRequest.getOrderDetailRequests();
-        Order order = findOrderById(orderId);
+    public void completeOrder(OrderCompleteRequest orderCompleteRequest, Long orderId, Long memberId) {
+        final List<OrderDetailRequest> orderDetailRequests = orderCompleteRequest.getOrderDetailRequests();
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFountException::new);
         order.validateOrder();
         order.changeStatus(OrderStatus.ORDER_COMPLETE);
 
@@ -109,14 +103,13 @@ public class OrderService {
         updateProductStocks(orderDetailRequests);
     }
 
-    private Order findOrderById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(OrderNotFountException::new);
-    }
-
     private void removePaymentStocks(List<OrderDetailRequest> orderDetailRequests, Long memberId) {
         for (OrderDetailRequest orderDetailRequest : orderDetailRequests) {
-            PaymentProduct paymentProduct = new PaymentProduct(orderDetailRequest.getProductId(), memberId, orderDetailRequest.getQty());
+            PaymentProduct paymentProduct = PaymentProduct.builder()
+                    .productId(orderDetailRequest.getProductId())
+                    .memberId(memberId)
+                    .qty(orderDetailRequest.getQty())
+                    .build();
             paymentProductOperation.remove(paymentProduct);
         }
     }
@@ -131,5 +124,4 @@ public class OrderService {
             }
         }
     }
-
 }
