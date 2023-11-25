@@ -1,8 +1,10 @@
 package com.ohsproject.ohs.global.redis;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class PaymentProduct {
     private Long productId;
 
@@ -13,7 +15,7 @@ public class PaymentProduct {
     protected PaymentProduct() {
     }
 
-    public PaymentProduct(Long productId, Long memberId, int qty) {
+    private PaymentProduct(Long productId, Long memberId, int qty) {
         this.productId = productId;
         this.memberId = memberId;
         this.qty = qty;
