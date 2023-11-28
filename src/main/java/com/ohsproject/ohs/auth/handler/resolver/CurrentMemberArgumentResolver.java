@@ -1,7 +1,7 @@
-package com.ohsproject.ohs.global.resolver;
+package com.ohsproject.ohs.auth.handler.resolver;
 
-import com.ohsproject.ohs.global.annotation.CurrentMember;
-import com.ohsproject.ohs.member.dto.request.MemberInfo;
+import com.ohsproject.ohs.auth.annotation.CurrentMember;
+import com.ohsproject.ohs.auth.dto.MemberInfo;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

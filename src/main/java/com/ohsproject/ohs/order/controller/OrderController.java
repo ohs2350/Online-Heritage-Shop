@@ -1,8 +1,8 @@
 package com.ohsproject.ohs.order.controller;
 
-import com.ohsproject.ohs.global.annotation.Login;
-import com.ohsproject.ohs.global.annotation.CurrentMember;
-import com.ohsproject.ohs.member.dto.request.MemberInfo;
+import com.ohsproject.ohs.auth.annotation.Login;
+import com.ohsproject.ohs.auth.annotation.CurrentMember;
+import com.ohsproject.ohs.auth.dto.MemberInfo;
 import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.service.OrderService;

@@ -1,4 +1,4 @@
-package com.ohsproject.ohs.member.dto.request;
+package com.ohsproject.ohs.auth.dto;
 
 import lombok.Getter;
 

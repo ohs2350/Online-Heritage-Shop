@@ -1,4 +1,4 @@
-package com.ohsproject.ohs.global.exception;
+package com.ohsproject.ohs.auth.exception;
 
 public class DuplicateLoginException extends RuntimeException{
     public DuplicateLoginException() {

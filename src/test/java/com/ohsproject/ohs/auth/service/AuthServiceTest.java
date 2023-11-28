@@ -1,9 +1,9 @@
-package com.ohsproject.ohs.member.service;
+package com.ohsproject.ohs.auth.service;
 
-import com.ohsproject.ohs.global.exception.DuplicateLoginException;
+import com.ohsproject.ohs.auth.exception.DuplicateLoginException;
 import com.ohsproject.ohs.member.domain.Member;
 import com.ohsproject.ohs.member.domain.MemberRepository;
-import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
+import com.ohsproject.ohs.auth.dto.request.LoginRequest;
 import com.ohsproject.ohs.member.exception.MemberNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberServiceTest {
+public class AuthServiceTest {
 
     @InjectMocks
-    private MemberService memberService;
+    private AuthService authService;
 
     @Mock
     private MemberRepository memberRepository;
@@ -36,12 +36,12 @@ public class MemberServiceTest {
     void login() {
         // given
         Member member = createMember();
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
+        LoginRequest loginRequest = new LoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
         // when
-        memberService.login(memberLoginRequest, session);
+        authService.login(loginRequest, session);
 
         // then
         verify(memberRepository, times(1)).findById(anyLong());
@@ -52,12 +52,12 @@ public class MemberServiceTest {
     @DisplayName("존재하지 않는 아이디로 로그인하는 경우 예외가 발생한다.")
     void loginWithNotValidMemberId() {
         // given
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
+        LoginRequest loginRequest = new LoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when, then
-        assertThrows(MemberNotFoundException.class, () -> memberService.login(memberLoginRequest, session));
+        assertThrows(MemberNotFoundException.class, () -> authService.login(loginRequest, session));
     }
 
     @Test
@@ -65,12 +65,12 @@ public class MemberServiceTest {
     void duplicateLogin() {
         // given
         Member member = createMember();
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
+        LoginRequest loginRequest = new LoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SESSION_ATTRIBUTE_NAME, member.getId());
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
         // when, then
-        assertThrows(DuplicateLoginException.class, () -> memberService.login(memberLoginRequest, session));
+        assertThrows(DuplicateLoginException.class, () -> authService.login(loginRequest, session));
     }
 }

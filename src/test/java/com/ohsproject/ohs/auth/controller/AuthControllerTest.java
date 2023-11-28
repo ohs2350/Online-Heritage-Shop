@@ -1,8 +1,8 @@
-package com.ohsproject.ohs.member.controller;
+package com.ohsproject.ohs.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ohsproject.ohs.member.dto.request.MemberLoginRequest;
-import com.ohsproject.ohs.member.service.MemberService;
+import com.ohsproject.ohs.auth.dto.request.LoginRequest;
+import com.ohsproject.ohs.auth.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +17,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(MemberController.class)
-public class MemberControllerTest {
+@WebMvcTest(AuthController.class)
+public class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private MemberService memberService;
+    private AuthService authService;
 
     final ObjectMapper objectMapper;
 
-    public MemberControllerTest() {
+    public AuthControllerTest() {
         this.objectMapper = new ObjectMapper();
     }
 
@@ -35,15 +35,15 @@ public class MemberControllerTest {
     @DisplayName("등록된 사용자가 요청 시 로그인에 성공한다.")
     void login() throws Exception {
         // given
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
+        LoginRequest loginRequest = new LoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/member/login")
+                post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(memberLoginRequest))
+                        .content(objectMapper.writeValueAsString(loginRequest))
         );
 
         // then
@@ -55,15 +55,15 @@ public class MemberControllerTest {
     @DisplayName("id를 null 값으로 로그인 요청한 경우 예외가 발생한다.")
     void loginWithNotValidId() throws Exception {
         // given
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(null);
+        LoginRequest loginRequest = new LoginRequest(null);
         MockHttpSession session = new MockHttpSession();
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/api/v1/member/login")
+                post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(memberLoginRequest))
+                        .content(objectMapper.writeValueAsString(loginRequest))
         );
 
         // then
