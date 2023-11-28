@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import static com.ohsproject.ohs.Constants.*;
+import static com.ohsproject.ohs.support.fixture.MemberFixture.MEMBER_ID;
+import static com.ohsproject.ohs.support.fixture.ProductFixture.PRODUCT_ID;
+import static com.ohsproject.ohs.support.fixture.ProductFixture.PRODUCT_STOCK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -19,39 +21,31 @@ public class PaymentProductOperationTest {
     private RedisTemplate<String, String> redisTemplate;
 
     @Test
-    @DisplayName("결제한 상품의 수량만큼 redis 에 add 한다.")
+    @DisplayName("상품의 수량만큼 redis 에 저장한다.")
     void add() {
         // given
-        PaymentProduct product = PaymentProduct.builder()
-                .productId(PRODUCT_ID_1ST)
-                .memberId(MEMBER_ID)
-                .qty(PRODUCT_STOCK_1ST)
-                .build();
+        PaymentProduct product = createPaymentProduct();
 
         // when
         paymentProductOperation.add(product);
 
         // then
-        Long count = paymentProductOperation.count(PRODUCT_ID_1ST);
-        assertEquals(PRODUCT_STOCK_1ST, count);
+        Long count = paymentProductOperation.count(product.getProductId());
+        assertEquals(product.getQty(), count);
     }
 
     @Test
-    @DisplayName("사용자가 주문한 모든 상품을 제거한다.")
+    @DisplayName("사용자가 주문한 상품의 수량만큼 redis 에서 제거한다.")
     public void remove() {
         // given
-        PaymentProduct product = PaymentProduct.builder()
-                .productId(PRODUCT_ID_1ST)
-                .memberId(MEMBER_ID)
-                .qty(PRODUCT_STOCK_1ST)
-                .build();
+        PaymentProduct product = createPaymentProduct();
         paymentProductOperation.add(product);
 
         // when
         paymentProductOperation.remove(product);
 
         // then
-        Long count = paymentProductOperation.count(PRODUCT_ID_1ST);
+        Long count = paymentProductOperation.count(product.getProductId());
         assertEquals(0, count);
     }
 
@@ -71,4 +65,11 @@ public class PaymentProductOperationTest {
         assertEquals(0, count);
     }
 
+    private PaymentProduct createPaymentProduct() {
+        return PaymentProduct.builder()
+                .productId(PRODUCT_ID)
+                .memberId(MEMBER_ID)
+                .qty(PRODUCT_STOCK)
+                .build();
+    }
 }
