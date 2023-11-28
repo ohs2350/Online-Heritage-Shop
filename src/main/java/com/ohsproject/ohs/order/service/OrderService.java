@@ -9,7 +9,7 @@ import com.ohsproject.ohs.order.domain.*;
 import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
-import com.ohsproject.ohs.order.exception.OrderNotFountException;
+import com.ohsproject.ohs.order.exception.OrderNotFoundException;
 import com.ohsproject.ohs.product.domain.Product;
 import com.ohsproject.ohs.product.domain.ProductRepository;
 import com.ohsproject.ohs.product.exception.InsufficientStockException;
@@ -95,7 +95,7 @@ public class OrderService {
     public void completeOrder(OrderCompleteRequest orderCompleteRequest, Long orderId, Long memberId) {
         final List<OrderDetailRequest> orderDetailRequests = orderCompleteRequest.getOrderDetailRequests();
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(OrderNotFountException::new);
+                .orElseThrow(OrderNotFoundException::new);
         order.validateOrder();
         order.changeStatus(OrderStatus.ORDER_COMPLETE);
 

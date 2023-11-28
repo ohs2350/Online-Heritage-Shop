@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static com.ohsproject.ohs.Constants.*;
+import static com.ohsproject.ohs.support.fixture.ProductFixture.createProduct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -16,10 +16,10 @@ public class ProductRepositoryTest {
     private ProductRepository productRepository;
 
     @Test
-    @DisplayName("주문한 상품 수량만큼 재고량이 감소한다. ")
+    @DisplayName("주문한 상품 수량만큼 재고량이 감소한다.")
     public void decreaseProductStock() {
         // given
-        Product product = createSampleProduct();
+        Product product = createProduct();
         productRepository.save(product);
 
         Long productId = product.getId();
@@ -36,10 +36,10 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("재고량이 부족한 경우 수정하지 않는다. 따라서 영향받은 로우가 없다")
+    @DisplayName("재고량이 부족한 경우 수정하지 않는다.")
     public void failDecreaseProductStock() {
         // given
-        Product product = createSampleProduct();
+        Product product = createProduct();
         productRepository.save(product);
 
         Long productId = product.getId();
@@ -53,12 +53,5 @@ public class ProductRepositoryTest {
         assertNotNull(updatedProduct);
         assertEquals(product.getStock(), updatedProduct.getStock());
         assertEquals(0, affectedRowCount);
-    }
-
-    private Product createSampleProduct() {
-        return Product.builder()
-                .id(PRODUCT_ID_1ST)
-                .stock(PRODUCT_STOCK_1ST)
-                .build();
     }
 }

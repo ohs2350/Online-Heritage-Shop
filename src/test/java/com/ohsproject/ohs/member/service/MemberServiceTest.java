@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import java.util.Optional;
 
-import static com.ohsproject.ohs.Constants.*;
+import static com.ohsproject.ohs.support.fixture.MemberFixture.createMember;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -29,14 +29,16 @@ public class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    public static final String SESSION_ATTRIBUTE_NAME = "memberId";
+
     @Test
-    @DisplayName("로그인 성공 후 세션에 id 저장")
+    @DisplayName("등록된 사용자가 정상적인 요청 시 로그인에 성공한다.")
     void login() {
         // given
-        Member member = createSampleMember();
-        MemberLoginRequest memberLoginRequest = createSampleMemberLoginDto();
+        Member member = createMember();
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
-        when(memberRepository.findById(MEMBER_ID)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
         // when
         memberService.login(memberLoginRequest, session);
@@ -47,10 +49,10 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("잘못된 아이디로 로그인하는 경우 예외를 발생 시킨다.")
-    void loginWithNotValidMember() {
+    @DisplayName("존재하지 않는 아이디로 로그인하는 경우 예외가 발생한다.")
+    void loginWithNotValidMemberId() {
         // given
-        MemberLoginRequest memberLoginRequest = createSampleMemberLoginDto();
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -59,26 +61,16 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("중복 로그인한 경우 예외를 발생 시킨다.")
+    @DisplayName("중복 로그인의 경우 예외가 발생한다.")
     void duplicateLogin() {
         // given
-        Member member = createSampleMember();
-        MemberLoginRequest memberLoginRequest = createSampleMemberLoginDto();
+        Member member = createMember();
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SESSION_ATTRIBUTE_NAME, member.getId());
-        when(memberRepository.findById(MEMBER_ID)).thenReturn(Optional.of(member));
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
         // when, then
         assertThrows(DuplicateLoginException.class, () -> memberService.login(memberLoginRequest, session));
     }
-
-
-    private Member createSampleMember() {
-        return new Member(MEMBER_ID, "test");
-    }
-
-    private MemberLoginRequest createSampleMemberLoginDto() {
-        return new MemberLoginRequest(MEMBER_ID);
-    }
-
 }
