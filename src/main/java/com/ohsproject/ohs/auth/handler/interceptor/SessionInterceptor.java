@@ -1,7 +1,7 @@
-package com.ohsproject.ohs.global.interceptor;
+package com.ohsproject.ohs.auth.handler.interceptor;
 
-import com.ohsproject.ohs.global.annotation.Login;
-import com.ohsproject.ohs.global.exception.SessionNotValidException;
+import com.ohsproject.ohs.auth.annotation.Login;
+import com.ohsproject.ohs.auth.exception.SessionNotValidException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;

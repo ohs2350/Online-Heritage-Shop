@@ -1,7 +1,7 @@
 package com.ohsproject.ohs.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ohsproject.ohs.global.exception.SessionNotValidException;
+import com.ohsproject.ohs.auth.exception.SessionNotValidException;
 import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;

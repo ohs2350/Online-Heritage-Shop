@@ -1,4 +1,4 @@
-package com.ohsproject.ohs.global.exception;
+package com.ohsproject.ohs.auth.exception;
 
 public class SessionNotValidException extends RuntimeException {
 
