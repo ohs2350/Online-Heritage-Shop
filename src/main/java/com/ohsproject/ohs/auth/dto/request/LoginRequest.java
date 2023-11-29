@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 public class LoginRequest {
-    @NotNull
+    @NotNull(message = "아이디를 입력해주세요.")
     private Long id;
 
     private LoginRequest() {

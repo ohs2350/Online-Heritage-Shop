@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class OrderCreateRequest {
 
-    @NotNull
+    @NotNull(message = "상품을 선택해 주세요.")
     private List<OrderDetailRequest> orderDetailRequests;
 
     private int amount;
