@@ -1,7 +1,6 @@
 package com.ohsproject.ohs.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ohsproject.ohs.auth.exception.SessionNotValidException;
 import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import static com.ohsproject.ohs.support.fixture.ProductFixture.PRODUCT_ID;
 import static com.ohsproject.ohs.support.fixture.ProductFixture.PRODUCT_STOCK;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -72,6 +70,7 @@ public class OrderControllerTest {
         resultActions.andExpect(status().isCreated())
                 .andExpect(header().string("Location", is("/api/v1/order/" + 1L)))
                 .andDo(print());
+        verify(orderService).placeOrder(any(OrderCreateRequest.class), eq(1L));
     }
 
     @Test
@@ -90,26 +89,29 @@ public class OrderControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isBadRequest());
-        verify(orderService, times(0)).placeOrder(refEq(orderCreateRequest), eq(1L));
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());;
+        verify(orderService, never()).placeOrder(any(OrderCreateRequest.class), eq(1L));
     }
 
     @Test
     @DisplayName("비로그인으로 주문 요청한 경우 예외가 발생한다.")
-    void placeOrderWithoutLogin()  {
+    void placeOrderWithoutLogin() throws Exception {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
         MockHttpSession session = new MockHttpSession();
 
-        // when, then
-        assertThatThrownBy(() -> mockMvc.perform(
+        // when
+        ResultActions resultActions = mockMvc.perform(
                 post("/api/v1/order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
                         .content(objectMapper.writeValueAsString(orderCreateRequest))
-        )).hasCause(new SessionNotValidException());
+        );
 
-        // TODO - 예외 헨들링 후 상태코드로 반환
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
@@ -130,6 +132,7 @@ public class OrderControllerTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print());
+        verify(orderService).completeOrder(any(OrderCompleteRequest.class), anyLong(), anyLong());
     }
 
     @Test
@@ -148,25 +151,29 @@ public class OrderControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+        verify(orderService, never()).completeOrder(any(OrderCompleteRequest.class), anyLong(), anyLong());
     }
 
     @Test
     @DisplayName("세션이 만료된 채로 주문 완료 요청 시 예외가 발생한다.")
-    void completeOrderWithoutLogin()  {
+    void completeOrderWithoutLogin() throws Exception {
         // given
-        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
         MockHttpSession session = new MockHttpSession();
 
-        // when, then
-        assertThatThrownBy(() -> mockMvc.perform(
+        // when
+        ResultActions resultActions = mockMvc.perform(
                 put("/api/v1/order/{orderId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .session(session)
-                        .content(objectMapper.writeValueAsString(orderCreateRequest))
-        )).hasCause(new SessionNotValidException());
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
+        );
 
-        // TODO - 예외 헨들링 후 상태코드로 반환
+        // then
+        resultActions.andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     private OrderCreateRequest createSampleOrderCreateRequest() {

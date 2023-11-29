@@ -13,6 +13,11 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.servlet.http.HttpSession;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +42,7 @@ public class AuthControllerTest {
         // given
         LoginRequest loginRequest = new LoginRequest(1L);
         MockHttpSession session = new MockHttpSession();
+        doNothing().when(authService).login(any(LoginRequest.class), any(HttpSession.class));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -49,6 +55,7 @@ public class AuthControllerTest {
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(print());
+        verify(authService).login(any(LoginRequest.class), any(HttpSession.class));
     }
 
     @Test
@@ -67,6 +74,7 @@ public class AuthControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isBadRequest());
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());;
     }
 }
