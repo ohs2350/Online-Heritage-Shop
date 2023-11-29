@@ -6,7 +6,8 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 public class OrderDetailRequest {
-    @NotNull
+
+    @NotNull(message = "상품을 선택해 주세요.")
     private Long productId;
 
     private int qty;

@@ -7,7 +7,8 @@ import java.util.List;
 
 @Getter
 public class OrderCompleteRequest {
-    @NotNull
+
+    @NotNull(message = "잘못된 요청입니다.")
     private List<OrderDetailRequest> orderDetailRequests;
 
     private int amount;

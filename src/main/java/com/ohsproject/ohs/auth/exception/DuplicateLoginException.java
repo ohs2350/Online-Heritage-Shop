@@ -1,7 +1,9 @@
 package com.ohsproject.ohs.auth.exception;
 
-public class DuplicateLoginException extends RuntimeException{
+import com.ohsproject.ohs.global.exception.custom.BadRequestException;
+
+public class DuplicateLoginException extends BadRequestException {
     public DuplicateLoginException() {
-        super("중복된 로그인.");
+        super("로그인은 한 번만 할 수 있습니다.");
     }
 }

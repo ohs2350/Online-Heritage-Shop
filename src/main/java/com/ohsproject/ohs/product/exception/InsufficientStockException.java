@@ -1,6 +1,8 @@
 package com.ohsproject.ohs.product.exception;
 
-public class InsufficientStockException extends RuntimeException {
+import com.ohsproject.ohs.global.exception.custom.BadRequestException;
+
+public class InsufficientStockException extends BadRequestException {
     public InsufficientStockException() {
         super("재고량이 부족합니다.");
     }
