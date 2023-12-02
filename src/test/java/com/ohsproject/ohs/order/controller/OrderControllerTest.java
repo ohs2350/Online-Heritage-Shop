@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohsproject.ohs.order.dto.request.OrderCompleteRequest;
 import com.ohsproject.ohs.order.dto.request.OrderCreateRequest;
 import com.ohsproject.ohs.order.dto.request.OrderDetailRequest;
+import com.ohsproject.ohs.order.exception.OrderNotFoundException;
+import com.ohsproject.ohs.order.exception.OrderNotValidException;
 import com.ohsproject.ohs.order.service.OrderService;
+import com.ohsproject.ohs.product.exception.InsufficientStockException;
+import com.ohsproject.ohs.product.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,6 +119,46 @@ public class OrderControllerTest {
     }
 
     @Test
+    @DisplayName("재고가 없는 상품에 대해 주문한 경우 요청에 실패한다.")
+    void insufficientStockBeforeOrder() throws Exception {
+        // given
+        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        when(orderService.placeOrder(any(OrderCreateRequest.class), anyLong())).thenThrow(new InsufficientStockException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCreateRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 상품에 대해 주문한 경우 요청에 실패한다.")
+    void placeOrderWithNotFoundProduct() throws Exception {
+        // given
+        OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
+        when(orderService.placeOrder(any(OrderCreateRequest.class), anyLong())).thenThrow(new ProductNotFoundException());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post("/api/v1/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCreateRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("주문 완료 api 요청 성공")
     public void completeOrder() throws Exception {
         // given
@@ -173,6 +217,66 @@ public class OrderControllerTest {
 
         // then
         resultActions.andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 주문으로 요청한 경우 요청에 실패한다.")
+    void completeOrderWithNotFoundOrder() throws Exception {
+        // given
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
+        doThrow(new OrderNotFoundException()).when(orderService).completeOrder(any(OrderCompleteRequest.class), anyLong(), anyLong());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/order/{orderId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("유효하지 않는 주문으로 요청한 경우 요청에 실패한다.")
+    void completeOrderWithNotValidOrder() throws Exception {
+        // given
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
+        doThrow(new OrderNotValidException()).when(orderService).completeOrder(any(OrderCompleteRequest.class), anyLong(), anyLong());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/order/{orderId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("주문 후 재고가 부족한 경우 요청에 실패한다.")
+    void insufficientStockAfterOrder() throws Exception {
+        // given
+        OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
+        doThrow(new InsufficientStockException()).when(orderService).completeOrder(any(OrderCompleteRequest.class), anyLong(), anyLong());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/api/v1/order/{orderId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .session(session)
+                        .content(objectMapper.writeValueAsString(orderCompleteRequest))
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest())
                 .andDo(print());
     }
 
