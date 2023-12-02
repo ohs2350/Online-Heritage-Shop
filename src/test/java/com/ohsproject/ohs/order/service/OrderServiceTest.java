@@ -82,7 +82,8 @@ public class OrderServiceTest {
                 () -> assertEquals(orderId, order.getId()),
                 () -> verify(memberRepository, times(1)).findById(member.getId()),
                 () -> verify(orderRepository, times(1)).save(any(Order.class)),
-                () -> verify(orderDetailRepository, times(1)).save(any(OrderDetail.class))
+                () -> verify(orderDetailRepository, times(1)).save(any(OrderDetail.class)),
+                () -> verify(paymentProductOperation, times(1)).count(anyLong())
         );
     }
 
@@ -99,7 +100,6 @@ public class OrderServiceTest {
                         new OrderDetailRequest(product1.getId(), product1.getStock()),
                         new OrderDetailRequest(product2.getId(), product2.getStock())),
                 1000);
-        int count = orderCreateRequest.getOrderDetailRequests().size();
 
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(productRepository.findById(product1.getId())).thenReturn(Optional.of(product1));
@@ -111,6 +111,8 @@ public class OrderServiceTest {
         Long orderId = orderService.placeOrder(orderCreateRequest, member.getId());
 
         // then
+        int count = orderCreateRequest.getOrderDetailRequests().size();
+
         assertAll(
                 () -> assertThat(orderId).isNotNull(),
                 () -> assertEquals(orderId, order.getId()),
@@ -118,7 +120,8 @@ public class OrderServiceTest {
                 () -> verify(orderRepository, times(1)).save(any(Order.class)),
                 () -> verify(productRepository, times(2)).findById(product1.getId()),
                 () -> verify(productRepository, times(2)).findById(product2.getId()),
-                () -> verify(orderDetailRepository, times(count)).save(any(OrderDetail.class))
+                () -> verify(orderDetailRepository, times(count)).save(any(OrderDetail.class)),
+                () -> verify(paymentProductOperation, times(count)).count(anyLong())
         );
     }
 
@@ -182,6 +185,7 @@ public class OrderServiceTest {
         assertThat(order.getStatus()).isEqualTo(OrderStatus.ORDER_COMPLETE);
         verify(paymentProductOperation).remove(any(PaymentProduct.class));
         verify(productRepository).decreaseProductStock(any(Long.class), any(Integer.class));
+        verify(orderRepository).findById(anyLong());
     }
 
     @Test
