@@ -78,7 +78,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("잘못된 입력으로 주문 시 예외가 발생한다.")
+    @DisplayName("잘못된 입력으로 주문 시 요청에 실패한다.")
     void placeOrderWithNotValidRequest() throws Exception {
         // given
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(null, 1000);
@@ -99,7 +99,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("비로그인으로 주문 요청한 경우 예외가 발생한다.")
+    @DisplayName("비로그인으로 주문 요청한 경우 요청에 실패한다.")
     void placeOrderWithoutLogin() throws Exception {
         // given
         OrderCreateRequest orderCreateRequest = createSampleOrderCreateRequest();
@@ -180,7 +180,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("잘못된 데이터로 주문 완료 API 요청 시 예외가 발생한다.")
+    @DisplayName("잘못 입력된 데이터로 주문 완료 API 요청 시 요청에 실패한다.")
     void completeOrderWithNotValidRequest() throws Exception {
         // given
         OrderCompleteRequest orderCompleteRequest = new OrderCompleteRequest(null, 1000);
@@ -201,7 +201,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    @DisplayName("세션이 만료된 채로 주문 완료 요청 시 예외가 발생한다.")
+    @DisplayName("세션이 만료된 채로 주문 완료 요청 시 요청에 실패한다.")
     void completeOrderWithoutLogin() throws Exception {
         // given
         OrderCompleteRequest orderCompleteRequest = createSampleOrderCompleteRequest();
