@@ -5,6 +5,7 @@ import com.ohsproject.ohs.global.exception.reponse.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +25,18 @@ public class ExceptionHandleAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleValidationException(final MethodArgumentNotValidException e) {
+        log.error(e.toString());
+
+        ExceptionResponse exceptionResponse = ExceptionResponse.from("400", "잘못된 요청입니다.");
+        for (FieldError fieldError : e.getFieldErrors()) {
+            exceptionResponse.addFieldError(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return ResponseEntity.badRequest().body(exceptionResponse);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ExceptionResponse> handleBindException(final BindException e) {
         log.error(e.toString());
 
         ExceptionResponse exceptionResponse = ExceptionResponse.from("400", "잘못된 요청입니다.");
