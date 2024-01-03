@@ -3,7 +3,6 @@ package com.ohsproject.ohs.auth.handler.resolver;
 import com.ohsproject.ohs.auth.annotation.CurrentMember;
 import com.ohsproject.ohs.auth.dto.MemberInfo;
 import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Objects;
 
-@Component
 public class CurrentMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String SESSION_ATTRIBUTE_NAME = "memberId";
