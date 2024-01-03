@@ -20,4 +20,12 @@ public class ProductFixture {
                 .stock(stock)
                 .build();
     }
+
+    public static Product createProduct(Long id, int stock, int price) {
+        return Product.builder()
+                .id(id)
+                .stock(stock)
+                .price(price)
+                .build();
+    }
 }
