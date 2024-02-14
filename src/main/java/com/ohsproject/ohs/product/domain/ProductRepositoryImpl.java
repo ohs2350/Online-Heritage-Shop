@@ -29,7 +29,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     @Override
     public Page<ProductDto> findAllByConditions(ProductSearchRequest productSearchRequest) {
-        List<ProductDto> productList =  jpaQueryFactory
+        List<ProductDto> products =  jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 ProductDto.class,
@@ -54,9 +54,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(product.count())
-                .from(product);
+                .from(product)
+                .innerJoin(categoryProduct).on(product.id.eq(categoryProduct.product.id))
+                .innerJoin(category).on(category.id.eq(categoryProduct.category.id))
+                .where(eqCategoryId(productSearchRequest.getCategory()),
+                        minPriceGoe(productSearchRequest.getMinPrice()),
+                        maxPriceLoe(productSearchRequest.getMaxPrice()));
 
-        return PageableExecutionUtils.getPage(productList, toPageable(productSearchRequest), countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(products, toPageable(productSearchRequest), countQuery::fetchOne);
     }
 
     private BooleanExpression eqCategoryId(Long categoryId) {
@@ -85,7 +90,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     }
 
     private Pageable toPageable(ProductSearchRequest productSearchRequest) {
-        int page = productSearchRequest.getPage();
+        int page = productSearchRequest.getPage() - 1;
         int size = productSearchRequest.getListSize();
         Sort.Order order = productSearchRequest.getSort().makeSortOrder();
 
