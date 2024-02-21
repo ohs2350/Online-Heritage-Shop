@@ -1,26 +1,31 @@
 ## **기술 스택**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e09a2ebc-9c1a-4b75-ab68-ec47dd332cd0)
-
+<div style="text-align: center;">
+    <img src="https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e09a2ebc-9c1a-4b75-ab68-ec47dd332cd0" width="85%" height="85%">
+</div>
 
 <br>  
 
 ## **시퀀스 다이어그램**
-**주문 API**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/f13871eb-1557-43ec-bcb9-632843c15e3d)
+**주문 API**  
+<img src="https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/f13871eb-1557-43ec-bcb9-632843c15e3d" width="75%" height="75%"/>
+
 <br>  
 
-**주문 완료 API**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e49a735c-86f5-4913-ba1b-66949495a8d6)
+**주문 완료 API**  
+<img src="https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e49a735c-86f5-4913-ba1b-66949495a8d6" width="75%" height="75%"/>
+
 <br>  
 
-**상품 목록 조회 API**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/df9e04f5-01bc-4687-9131-8589e6e3796a)
-<br> 
-<br>  
+**상품 목록 조회 API**  
+<img src="https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/df9e04f5-01bc-4687-9131-8589e6e3796a" width="65%" height="65%"/>
 
-## **시스템 아키텍처**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/8b7355c4-9e70-4f37-a018-d2c4ea134278)
-<br> 
+
+<br>   
+
+## **시스템 아키텍처**  
+<div style="text-align: center;">
+    <img src="https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/8b7355c4-9e70-4f37-a018-d2c4ea134278" width="85%" height="85%">
+</div>
 
 ## **Writing**
 
