@@ -1,34 +1,36 @@
-### **기술 스택**
-![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/db8bf9b3-6784-417e-a779-c3bd32c116ec)
+## **기술 스택**
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e09a2ebc-9c1a-4b75-ab68-ec47dd332cd0)
 
----
-### **시퀀스 다이어그램**
+
+<br>  
+
+## **시퀀스 다이어그램**
 **주문 API**
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/80a1dbd5-afcb-4144-a973-2228aee3ad7d/0c488236-014e-4916-8bb2-c41dd496112f/Untitled.png)
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/f13871eb-1557-43ec-bcb9-632843c15e3d)
+<br>  
 
 **주문 완료 API**
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/80a1dbd5-afcb-4144-a973-2228aee3ad7d/d981b567-f0e0-456e-a5e7-dd84924561ba/Untitled.png)
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/e49a735c-86f5-4913-ba1b-66949495a8d6)
+<br>  
 
 **상품 목록 조회 API**
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/df9e04f5-01bc-4687-9131-8589e6e3796a)
+<br> 
+<br>  
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/80a1dbd5-afcb-4144-a973-2228aee3ad7d/de695155-fb38-4740-8a6e-7cb138913705/Untitled.png)
+## **시스템 아키텍처**
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/8b7355c4-9e70-4f37-a018-d2c4ea134278)
+<br> 
 
----
-### **시스템 아키텍처**
+## **Writing**
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/80a1dbd5-afcb-4144-a973-2228aee3ad7d/ad0ae67c-be73-4c90-babd-0388b409c594/Untitled.png)
+[데이터베이스 정합성 문제 해결](https://crystal-dead-18f.notion.site/494b921eb413408caf850259fb50e264?pvs=25) <br>  
+[주문 서비스 개선](https://crystal-dead-18f.notion.site/a6fc163a88584426914e97dae8e5af4b?pvs=25) <br>  
+[조회 서비스 구현](https://crystal-dead-18f.notion.site/9adbf30a76064e71afbb3b4dc28874f9?pvs=25)
 
----
-### **Writing**
+<br>  
 
-[데이터베이스 정합성 문제 해결](https://www.notion.so/494b921eb413408caf850259fb50e264?pvs=21)
-[주문 서비스 개선](https://www.notion.so/a6fc163a88584426914e97dae8e5af4b?pvs=21)
-[조회 서비스 구현](https://www.notion.so/9adbf30a76064e71afbb3b4dc28874f9?pvs=21)
+## **ERD**
 
----
-### **ERD**
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/80a1dbd5-afcb-4144-a973-2228aee3ad7d/9d91e7a8-465d-4d9e-9721-4be4624db9c5/Untitled.png)
-
+![image](https://github.com/ohs2350/Online-Heritage-Shop/assets/84179165/cd20616e-7186-45b4-b07e-5782421a5012)
+<br>  
